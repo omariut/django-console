@@ -1,0 +1,19 @@
+
+<div class="container">
+
+    <h1 class="text-center">{{ app_name|title }} <a href="{% url 'delete-app' app_name %}">
+        <i class="fas fa-trash fa-sm"></i>
+      </a></h1>
+    <form action="{% url  'add-model' app_name %}" method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="model_name">Name</label>
+        <input type="text" class="form-control" placeholder="Type Model name" name="model_name">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+{%for key,value in models.items %}
+{% include 'quick_dj/model.html' with model_name=key app_name=app_name fields=value.fields %}
+
+{%endfor%}
