@@ -20,3 +20,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('quickdj/', include('quick_dj.urls')),
 ]
+urlpatterns+=[
+path('old/', include('old.urls')), 
+path('new/', include('new.urls')), 
+
+]

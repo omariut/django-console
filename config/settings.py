@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "quick_dj"
 ]
 
+
+ 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

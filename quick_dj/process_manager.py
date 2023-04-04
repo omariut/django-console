@@ -53,6 +53,64 @@ def write_models_file(app_name: str, models: Dict[str, Dict[str, Dict[str, List[
             f.write(model_body)
             f.write('\n\n')
 
+
+def get_additional_apps_string(app_names):
+    additional_apps = "\n"
+    for name in app_names:
+        additional_apps+=f"\t \"{name}\", \n"
+    return additional_apps
+
+def get_file_context(file):
+    with open(file,'r') as file:
+        data = file.readlines()
+    
+    return data
+
+def get_line_number_of_text(file,text):
+    data=get_file_context(file)
+    
+    for linenumber,line in enumerate(data):
+        if text in line:
+            return linenumber
+ 
+
+
+def write_additional_apps_string(app_names,file):
+    apps_list = get_additional_apps_string(app_names)
+    data=get_file_context(file)
+    new_installed_app_string = f"INSTALLED_APPS+=[{apps_list}] \n \n"
+    last_line_of_installed_app_variable = get_line_number_of_text(file,"MIDDLEWARE")
+    data.insert(last_line_of_installed_app_variable,new_installed_app_string)
+    data = "".join(data)
+    
+    with open(file,'w') as file:
+        file.write(data)
+
+def get_app_url(app_name):
+    return f"path('{app_name}/', include('{app_name}.urls')), \n"
+
+def write_include_app_urls(app_names):
+    file = "config/urls.py"
+    app_urls=""
+    
+    for name in app_names:
+        app_urls+=get_app_url(name)
+    
+    new_urls = f"urlpatterns+=[\n{app_urls}\n]"
+
+    with open(file,'a') as file:
+        file.write(new_urls)
+    
+
+
+def edit_settings_file(app_names):
+    pass
+
+
+
+    
+
+
 def process_project(apps: Dict[str, Dict[str, Dict[str, Dict[str, List[Dict[str, str]]]]]]) -> None:
     for app_name, value in apps.items():
         start_app(app_name)
