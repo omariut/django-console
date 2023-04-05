@@ -1,7 +1,7 @@
 import os
 from abc import ABC, abstractmethod
 from typing import Dict, List
-from auto_api.auto_api_view import APIViewBuilder
+from quick_dj.auto_api.auto_api_view import APIViewWriter
 
 class ModelBuilder(ABC):
     @abstractmethod
@@ -117,3 +117,8 @@ def process_project(apps: Dict[str, Dict[str, Dict[str, Dict[str, List[Dict[str,
         start_app(app_name)
         models = value["models"]
         write_models_file(app_name, models)
+        for model_name,value in models.items():
+            writer = APIViewWriter(app_name, model_name)
+            writer.write_views()
+
+

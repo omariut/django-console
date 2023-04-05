@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+from quick_dj.auto_api.auto_serializer import ModelSerializerWriter
 
 class BaseAPIViewWriter(ABC):
     def __init__(self,app_name, model_name):
@@ -48,7 +48,7 @@ class RetrieveUpdateDestroyAPIViewWriter(BaseAPIViewWriter):
 class UrlWriter:
     def __init__(self,app_name, model_name,):
         self.model_name = model_name
-        self.file_name=f"{app_name}/{model_name}/urls.py"
+        self.file_name=f"{app_name}/urls.py"
 
 
     def write_urls(self):
@@ -62,21 +62,27 @@ class UrlWriter:
             f.write(url_string)
             f.write("]\n")
 
-class APIViewBuilder:
+class APIViewWriter:
     
     def __init__(self,app_name,model_name):
         self.app_name=app_name
         self.model_name=model_name
     
     def write_urls(self):
-        url_writer=UrlWriter(app_name, model_name)
+        url_writer=UrlWriter(self.app_name, self.model_name)
         url_writer.write_urls()
 
+    def write_serializer(self):
+        writer = ModelSerializerWriter(self.app_name, self.model_name)
+        writer.write_serializer()
+
     def write_views(self):
+        self.write_serializer()
         list_create_api_view_writer = ListCreateAPIViewWriter(self.app_name,self.model_name)
         list_create_api_view_writer.write_view()
         retrieve_update_destroy_api_view_writer = RetrieveUpdateDestroyAPIViewWriter(self.app_name, self.model_name)
         retrieve_update_destroy_api_view_writer.write_view()
+        self.write_urls()
         
 
 
