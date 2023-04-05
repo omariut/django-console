@@ -1,6 +1,7 @@
 import os
 from abc import ABC, abstractmethod
 from typing import Dict, List
+from auto_api.auto_api_view import APIViewBuilder
 
 class ModelBuilder(ABC):
     @abstractmethod

@@ -72,9 +72,9 @@ class UrlWriter:
         import_string = "from django.urls import path\n\n"
         
         url_string = ''
-        url_string += f"    path('', {self.model_name}ListViewWriter.as_view(), name='{self.model_name.lower()}_list'),\n"
-        url_string += f"    path('create/', {self.model_name}CreateViewWriter.as_view(), name='{self.model_name.lower()}_create'),\n"
-        url_string += f"    path('<int:pk>/', {self.model_name}DetailViewWriter.as_view(), name='{self.model_name.lower()}_detail'),\n"
+        url_string += f"    path('', {self.model_name}ListView.as_view(), name='{self.model_name.lower()}_list'),\n"
+        url_string += f"    path('create/', {self.model_name}CreateView.as_view(), name='{self.model_name.lower()}_create'),\n"
+        url_string += f"    path('<int:pk>/', {self.model_name}DetailView.as_view(), name='{self.model_name.lower()}_detail'),\n"
         
         with open(self.file, 'a') as f:
             f.write(import_string)
