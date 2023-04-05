@@ -20,11 +20,3 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('quickdj/', include('quick_dj.urls')),
 ]
-<<<<<<< HEAD
-=======
-urlpatterns+=[
-path('old/', include('old.urls')), 
-path('new/', include('new.urls')), 
-
-]
->>>>>>> 3ab8701 (settings)
