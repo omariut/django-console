@@ -1,20 +1,5 @@
 {% extends 'quick_dj/base.html' %}
 {% block content %}
-<!-- <a href="{% url 'add-app' %}">Add App</a>
-{%for key,value in apps.items%}
-{% include 'quick_dj/app.html' with app_name=key models=value.models %}
-{%endfor%}
-
-
-<form action="{% url  'add-app'%}" method="post">
-    <label for="app_name">Name</label>
-    
-    <input type="text" placeholder="Type app name" name="app_name">
-    <button type="submit">Submit</button>
-
-</form>
-
-<a href="{%url 'create-app' %}"> Create Apps </a> -->
 <div class="d-flex justify-content-center">
     <form action="{% url 'add-app' %}" method="post">
       {% csrf_token %}

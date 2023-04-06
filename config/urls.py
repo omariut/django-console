@@ -20,3 +20,15 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('quickdj/', include('quick_dj.urls')),
 ]
+
+
+
+
+urlpatterns+=[
+	path('product/', include('product.urls')), 
+	path('user/', include('user.urls')), 
+	
+ ]
+
+
+

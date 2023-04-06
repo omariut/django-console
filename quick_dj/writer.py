@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 import os
+from django.conf import settings
 
 
 class PrepareFiles:
 
-    def __init__(self,app_name):
+    def __init__(self,app_name,write_api_views=False):
         self.app_name=app_name
+        self.write_api_views=write_api_views
         self.write_import_line_to_view_file()
         self.write_import_line_to_url_file()
 
@@ -16,17 +18,17 @@ class PrepareFiles:
 
     def write_import_line_to_view_file(self):
         file_name=f"{self.app_name}/views.py"
-        import_line="from rest_framework import generics \n" + f"from {self.app_name} import serializers\n" + "from django.views import generic"
+        import_line="from django.views import generic \n"
+        import_line+=f"from {self.app_name} import models as {self.app_name}_models \n"
+        if self.write_api_views:
+            import_line+="from rest_framework import generics \n" + f"from {self.app_name} import serializers\n"
         self.write_import_line(file_name,import_line)
 
 
     def write_import_line_to_url_file(self):
         file_name=f"{self.app_name}/urls.py"
-        import_line="from django.urls import path"
+        import_line="from django.urls import path" + "\n" + f"from {self.app_name} import views"
         self.write_import_line(file_name,import_line)
-
-        with open(file_name,'a') as f:
-            f.write("urlpatterns=[\n]\n")
 
 
 class BaseWriter(ABC):
@@ -110,15 +112,15 @@ class BaseURLWriter(BaseWriter):
 
     def get_object_string(self):
         url_string=self.get_url_string()
-        return "urlpatterns+= [\n" + url_string + "]\n"
+        return "urlpatterns = [\n" + url_string + "]\n"
 
 class APIUrlWriter(BaseURLWriter):
 
 
     def get_url_string(self):
         url_string = ''
-        url_string += f"    path('{self.model_name.lower()}s/', {self.model_name}ListCreateAPIView.as_view(), name='{self.model_name.lower()}_list_create'),\n"
-        url_string += f"    path('{self.model_name.lower()}s/<int:pk>', {self.model_name}RetrieveUpdateDestroyAPIView.as_view(), name='{self.model_name.lower()}_retrieve_update_destroy'),\n"
+        url_string += f"    path('{self.model_name.lower()}s/', views.{self.model_name}ListCreateAPIView.as_view(), name='{self.model_name.lower()}_list_create'),\n"
+        url_string += f"    path('{self.model_name.lower()}s/<int:pk>', views.{self.model_name}RetrieveUpdateDestroyAPIView.as_view(), name='{self.model_name.lower()}_retrieve_update_destroy'),\n"
         return url_string
 
 
@@ -146,7 +148,7 @@ class CreateViewWriter(BaseViewWriter):
         return f"class {self.model_name}CreateView(generic.CreateView):\n"
 
     def get_object_body(self):
-        return f"\tmodel = {self.model_name}\n\tfields = '__all__'\n\tsuccess_url= ' \ \' "
+        return f"\tmodel = {self.app_name}_models.{self.model_name}\n\tfields = '__all__'\n\tsuccess_url= ' \ \' "
 
 
 class ListViewWriter(BaseViewWriter):
@@ -155,7 +157,7 @@ class ListViewWriter(BaseViewWriter):
         return f"class {self.model_name}ListView(generic.ListView):\n"
 
     def get_object_body(self):
-        return f"\tmodel = {self.model_name}\n\tpaginate_by = 10 \n"
+        return f"\tmodel =  {self.app_name}_models.{self.model_name}\n\tpaginate_by = 10 \n"
 
 
 class DetailViewWriter(BaseViewWriter):
@@ -164,15 +166,15 @@ class DetailViewWriter(BaseViewWriter):
         return f"class {self.model_name}DetailView(generic.DetailView):\n"
 
     def get_object_body(self):
-        return f"\tmodel = {self.model_name} \n"
+        return f"\tmodel =  {self.app_name}_models.{self.model_name} \n"
 
 class URLWriter(BaseURLWriter):
 
     def get_url_string(self):
         url_string = ''
-        url_string += f"    path('{self.model_name.lower()}/list/', {self.model_name}ListView.as_view(), name='{self.model_name.lower()}_list'),\n"
-        url_string += f"    path('{self.model_name.lower()}/create/', {self.model_name}CreateView.as_view(), name='{self.model_name.lower()}_create'),\n"
-        url_string += f"    path('{self.model_name.lower()}/<int:pk>/', {self.model_name}DetailView.as_view(), name='{self.model_name.lower()}_detail'),\n"
+        url_string += f"    path('{self.model_name.lower()}/list/', views.{self.model_name}ListView.as_view(), name='{self.model_name.lower()}_list'),\n"
+        url_string += f"    path('{self.model_name.lower()}/create/', views.{self.model_name}CreateView.as_view(), name='{self.model_name.lower()}_create'),\n"
+        url_string += f"    path('{self.model_name.lower()}/<int:pk>/', views.{self.model_name}DetailView.as_view(), name='{self.model_name.lower()}_detail'),\n"
         return url_string
 
 class ViewURLWriter:
@@ -229,3 +231,41 @@ class ModelWriter(BaseWriter):
             return model_body + meta_body
         else:
             return model_body
+
+
+class NewAppsWriter(BaseWriter):
+    def __init__(self,app_names):
+        self.app_names=app_names
+        settings_file=settings.ROOT_URLCONF.split(".")[0] + "/settings.py"
+        self.file_name=settings_file
+
+    def get_object_header(self):
+        return "INSTALLED_APPS+=["
+
+    def get_object_body(self):
+        new_apps = "\n"
+        for name in self.app_names:
+            new_apps+=f"\t \"{name}\", \n"
+        return new_apps + "\n]\n"
+
+class IncludeAppUrlToRootUrlWriter(BaseWriter):
+
+    def __init__(self,app_names):
+        self.app_names=app_names
+        self.file_name=settings.ROOT_URLCONF.split(".")[0] + "/urls.py"
+    
+    def get_object_header(self):
+        return "urlpatterns+=[\n\t"
+
+    def get_include_app_url(self,app_name):
+        return f"path('{app_name}/', include('{app_name}.urls')), \n\t"
+
+
+    def get_object_body(self):
+        app_urls=""
+        for name in self.app_names:
+            app_urls+=self.get_include_app_url(name)
+        
+        return app_urls + "\n ]\n"
+
+
