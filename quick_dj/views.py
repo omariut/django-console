@@ -54,6 +54,18 @@ def add_field(request,model_name,app_name):
         context["app_name"]=app_name
         return render(request, 'quick_dj/forms/field_form.html',context=context)
 
+@csrf_exempt
+def add_model_meta(request,model_name,app_name):
+    if request.method=="POST":
+        for meta_option_name,meta_option_value in request.POST.items():
+            if meta_option_value:
+                data_manager.create_meta_option(app_name, model_name,meta_option_name, meta_option_value)
+        return redirect('home')
+    else:
+        context={}
+        context["model_name"]=model_name
+        context["app_name"]=app_name
+        return render(request, 'quick_dj/forms/model_meta_form.html',context=context)
 
 
 

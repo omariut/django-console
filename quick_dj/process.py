@@ -1,5 +1,6 @@
 import os
 import quick_dj.utils as utils
+from quick_dj.writer import ModelWriter
 
 def start_app(app_name):
     os.system(f'rm -rf {app_name} && python manage.py startapp {app_name}')
@@ -42,7 +43,10 @@ def process_project(apps):
     for app_name,value in apps.items():
         start_app(app_name)
         models=value["models"]
-        write_models_file(app_name,models)
+        for model_name,value in models:
+            fields=value["fields"]
+            ModelWriter(app_name, model_name, fields).write_object()
+        
         
         
         

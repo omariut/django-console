@@ -111,14 +111,17 @@ def edit_settings_file(app_names):
 
     
 
-
+from quick_dj.writer import ModelWriter,APIViewURLWriter,ViewURLWriter
 def process_project(apps: Dict[str, Dict[str, Dict[str, Dict[str, List[Dict[str, str]]]]]]) -> None:
     for app_name, value in apps.items():
         start_app(app_name)
         models = value["models"]
-        write_models_file(app_name, models)
         for model_name,value in models.items():
-            writer = APIViewWriter(app_name, model_name)
-            writer.write_views()
+            fields=value["fields"]
+            meta_options=value["meta_options"]
+            ModelWriter(app_name, model_name, fields,meta_options).write_object()
+            APIViewURLWriter(app_name, model_name).write_api_views_and_urls()
+            ViewURLWriter(app_name, model_name).write_views_and_urls()
+
 
 

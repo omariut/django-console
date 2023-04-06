@@ -1,1 +1,1 @@
-{"apps": {"product": {"models": {"Product": {"fields": {"age": {"type": "DecimalField", "options": [{"name": "max_digits", "value": "5"}, {"name": "decimal_places", "value": "2"}]}, "name2": {"type": "CharField", "options": [{"name": "max_length", "value": "100"}]}}}, "User": {"fields": {}}}}}}
+{"apps": {"product": {"models": {"Product": {"fields": {"price": {"type": "FloatField", "options": []}}, "meta_options": {"abstract": "True", "ordering": "['pub']"}}}}}}

@@ -8,7 +8,7 @@ class DataManager:
         if not os.path.exists(file):
             with open(file, 'w') as f:
                 json.dump({"apps": {}}, f)
-                
+
         self.file: str = file
         self.data: Dict[str, Dict[str, Dict[str, Union[Dict[str, Union[str, List[Dict[str, str]]]], Dict[str, Dict[str, Union[str, List[Dict[str, str]]]]]]]]] = self._load_data()
 
@@ -25,7 +25,7 @@ class DataManager:
         self._save_data()
 
     def create_model(self, app_name: str, model_name: str) -> None:
-        self.data["apps"][app_name]["models"][model_name] = {"fields": {}}
+        self.data["apps"][app_name]["models"][model_name] = {"fields": {}, "meta_options":{}}
         self._save_data()
 
     def create_field(self, app_name: str, model_name: str, field_name: str, field_type: str) -> None:
@@ -40,6 +40,10 @@ class DataManager:
             "name": option_name,
             "value": option_value
         })
+        self._save_data()
+
+    def create_meta_option(self, app_name: str, model_name: str,meta_option_name: str, meta_option_value: str) -> None:
+        self.data["apps"][app_name]["models"][model_name]["meta_options"][meta_option_name]=meta_option_value
         self._save_data()
 
     def delete_app(self, app_name: str) -> None:
