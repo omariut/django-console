@@ -23,12 +23,3 @@ urlpatterns = [
 
 
 
-
-urlpatterns+=[
-	path('product/', include('product.urls')), 
-	path('user/', include('user.urls')), 
-	
- ]
-
-
-
