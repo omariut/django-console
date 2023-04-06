@@ -1,59 +1,6 @@
+
 import os
-from abc import ABC, abstractmethod
-from typing import Dict, List
-from quick_dj.auto_api.auto_api_view import APIViewWriter
-
-class ModelBuilder(ABC):
-    @abstractmethod
-    def create_field(self, field_name: str, field_type: str, options: List[Dict[str, str]]) -> None:
-        pass
-
-    @abstractmethod
-    def get_model_string(self) -> str:
-        pass
-
-class DjangoModelBuilder(ModelBuilder):
-    def __init__(self, model_name: str) -> None:
-        self.model_name = model_name
-        self.fields = []
-
-    def create_field(self, field_name: str, field_type: str, options: List[Dict[str, str]]) -> None:
-        field_options = ", ".join([f"{opt['name']}={opt['value']}" for opt in options])
-        self.fields.append(f"{field_name} = models.{field_type}({field_options})")
-
-    def get_model_string(self) -> str:
-        model_header = f"class {self.model_name}(models.Model):\n"
-        model_body = "\n".join([f"\t{field}" for field in self.fields])
-        return model_header + model_body
-
-class Director:
-    def __init__(self, builder: ModelBuilder) -> None:
-        self.builder = builder
-
-    def construct_model(self, fields: Dict[str, Dict[str, List[Dict[str, str]]]]) -> None:
-        for field_name, value in fields.items():
-            field_type = value["type"]
-            options = value["options"]
-            self.builder.create_field(field_name, field_type, options)
-
-    def get_model(self) -> str:
-        return self.builder.get_model_string()
-
-def start_app(app_name: str) -> None:
-    os.system(f"rm -rf {app_name} && python manage.py startapp {app_name}")
-
-def write_models_file(app_name: str, models: Dict[str, Dict[str, Dict[str, List[Dict[str, str]]]]]) -> None:
-    for model_name, value in models.items():
-        fields = value["fields"]
-        django_builder = DjangoModelBuilder(model_name)
-        director = Director(django_builder)
-        director.construct_model(fields)
-        model_body = director.get_model()
-
-        with open(f"{app_name}/models.py", "a") as f:
-            f.write(model_body)
-            f.write('\n\n')
-
+from django.conf import settings
 
 def get_additional_apps_string(app_names):
     additional_apps = "\n"
@@ -73,10 +20,14 @@ def get_line_number_of_text(file,text):
     for linenumber,line in enumerate(data):
         if text in line:
             return linenumber
+
+def get_settings_file():
+    return settings.ROOT_URLCONF.split(".")[0] + "/settings.py"
  
 
 
-def write_additional_apps_string(app_names,file):
+def write_additional_apps_string(app_names):
+    file=get_settings_file()
     apps_list = get_additional_apps_string(app_names)
     data=get_file_context(file)
     new_installed_app_string = f"INSTALLED_APPS+=[{apps_list}] \n \n"
@@ -86,42 +37,28 @@ def write_additional_apps_string(app_names,file):
     
     with open(file,'w') as file:
         file.write(data)
-
-def get_app_url(app_name):
-    return f"path('{app_name}/', include('{app_name}.urls')), \n"
-
-def write_include_app_urls(app_names):
-    file = "config/urls.py"
-    app_urls=""
     
-    for name in app_names:
-        app_urls+=get_app_url(name)
-    
-    new_urls = f"urlpatterns+=[\n{app_urls}\n]"
-
-    with open(file,'a') as file:
-        file.write(new_urls)
-    
-
-
-def edit_settings_file(app_names):
-    pass
-
-
-
-    
+def start_app(app_name: str) -> None:
+    os.system(f"rm -rf {app_name} && python manage.py startapp {app_name}")
 
 from quick_dj.writer import ModelWriter,APIViewURLWriter,ViewURLWriter
-def process_project(apps: Dict[str, Dict[str, Dict[str, Dict[str, List[Dict[str, str]]]]]]) -> None:
+def process_project(apps,write_template_views=False,write_api_views=False)-> None:
+    app_names=[]
     for app_name, value in apps.items():
+        app_names.append(app_name)
         start_app(app_name)
         models = value["models"]
         for model_name,value in models.items():
             fields=value["fields"]
             meta_options=value["meta_options"]
+            
             ModelWriter(app_name, model_name, fields,meta_options).write_object()
-            APIViewURLWriter(app_name, model_name).write_api_views_and_urls()
-            ViewURLWriter(app_name, model_name).write_views_and_urls()
+
+            if write_api_views:
+                APIViewURLWriter(app_name, model_name).write_api_views_and_urls()
+            if write_template_views:
+                ViewURLWriter(app_name, model_name).write_views_and_urls()
+    write_additional_apps_string(app_names)
 
 
 

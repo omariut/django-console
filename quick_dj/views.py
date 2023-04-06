@@ -86,7 +86,10 @@ def delete_field(request,app_name,model_name, field_name):
     data_manager.delete_field(app_name, model_name, field_name)
     return redirect('home')
 
+@csrf_exempt
 def create_apps(request):
+    write_template_views=bool(request.POST.get("template_views"))
+    write_api_views=bool(request.POST.get("api_views"))
     data=data_manager._load_data()
-    process_project(data["apps"])
+    process_project(data["apps"],write_template_views,write_api_views)
     return HttpResponse("Success")

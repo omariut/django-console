@@ -221,9 +221,11 @@ class ModelWriter(BaseWriter):
             field_string=self.get_field_string(field_name, field_type, options)
             model_body+= "\t" + field_string + "\n"
         
+        if self.meta_options:
+            meta_body="\n\tclass Meta: \n"
+            for key,value in self.meta_options.items():
+                meta_body+=f"\t\t{key}={value}\n"
 
-        meta_body="\n\tclass Meta: \n"
-        for key,value in self.meta_options.items():
-            meta_body+=f"\t\t{key}={value}\n"
-
-        return model_body + meta_body
+            return model_body + meta_body
+        else:
+            return model_body

@@ -52,7 +52,7 @@
       <tr>
         {%for k,v in models.items%}
       
-        {%  with model_name=k fields=v.fields %}
+        {%  with model_name=k fields=v.fields meta_options=v.meta_options  %}
         <th colspan="6">class {{model_name}}(models.Model): 
             
         
@@ -74,6 +74,21 @@
           </tr>
           {%endwith%}
           {%endfor%}
+
+          {%if meta_options%}
+<tr>
+          
+          <tr class="p-0 px-6"> class Meta:</tr>
+          {%for key,value in meta_options.items%}
+
+          <tr>
+            {{key}}={{value}}
+          </tr>
+{%endfor%}
+{%endif%}
+
+        </tr>
+
           <tr>
             <td>{% include 'quick_dj/forms/field_form.html' with model_name=model_name app_name=app_name %}</td>
           </tr>
@@ -89,6 +104,15 @@
   </table>
   {%endwith%}
   {%endfor%}
-  <a href="{%url 'create-app' %}"> Create Apps </a>
+
+  <form action="{%url 'create-app' %}" method="post">
+    <label for="api_views">api_view</label>
+<input type="checkbox" name="api_views" id="api_views" >
+<label for="template_views">template_views</label>
+<input type="checkbox" name="template_views" id="template_views">
+
+    <button type="submit">Create Apps</button>
+  </form>
+
 {% endblock content %}
 
