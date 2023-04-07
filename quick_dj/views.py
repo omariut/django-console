@@ -2,9 +2,9 @@ from django.shortcuts import render,redirect
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core.exceptions import BadRequest
-from quick_dj.process_manager import process_project
 from django.http import HttpResponse
 from quick_dj.data_manager import DataManager
+from quick_dj.writers.apps import WriteApps
 
 data_manager=DataManager()
 # Create your views here.
@@ -91,5 +91,5 @@ def create_apps(request):
     write_template_views=bool(request.POST.get("template_views"))
     write_api_views=bool(request.POST.get("api_views"))
     data=data_manager._load_data()
-    process_project(data["apps"],write_template_views,write_api_views)
+    app_writer = WriteApps(data["apps"],write_template_views,write_api_views).write()
     return HttpResponse("Success")
