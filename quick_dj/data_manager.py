@@ -46,6 +46,11 @@ class DataManager:
         self.data["apps"][app_name]["models"][model_name]["meta_options"][meta_option_name]=meta_option_value
         self._save_data()
 
+    def delete_meta_option(self, app_name: str, model_name: str) -> None:
+        print(self.data)
+        self.data["apps"][app_name]["models"][model_name]["meta_options"]=[]
+        self._save_data()
+
     def delete_app(self, app_name: str) -> None:
         del self.data["apps"][app_name]
         self._save_data()

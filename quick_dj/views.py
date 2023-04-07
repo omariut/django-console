@@ -86,6 +86,10 @@ def delete_field(request,app_name,model_name, field_name):
     data_manager.delete_field(app_name, model_name, field_name)
     return redirect('home')
 
+def delete_meta_options(request,app_name,model_name):
+    data_manager.delete_meta_option(app_name, model_name)
+    return redirect('home')
+
 @csrf_exempt
 def create_apps(request):
     write_template_views=bool(request.POST.get("template_views"))
