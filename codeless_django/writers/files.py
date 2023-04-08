@@ -1,3 +1,6 @@
+from codeless_django.writers.base import BaseWriter
+import os
+
 class PrepareFiles:
 
     def __init__(self,app_name,write_api_views=False):
@@ -31,3 +34,33 @@ class PrepareFiles:
         file_name=f"{self.app_name}/urls.py"
         import_line="from django.urls import path" + "\n" + f"from {self.app_name} import views"
         self.write_import_line(file_name,import_line)
+
+class RequirementTextWriter:
+    def __init__(self):
+        self.file_name="requirements.txt"
+        os.system("pip freeze > requirements.txt")
+    
+    def add_new_package(self,package_name,version):
+        with open(self.file_name,'a') as f:
+            f.write(f"{package_name}=={version}")
+
+
+class DotEnvFileWriter:
+    def __init__(self):
+        self.file_name=".env"
+    
+    def add_new_key(self,key,value):
+        with open(self.file_name,'a') as f:
+            f.write(f"{key}={value}")
+
+
+class AdditionalFileWriter:
+    def __init__(self):
+        self.requirement_text_writer = RequirementTextWriter()
+
+
+    def write_gitignore_file(self):
+        os.system("cp codeless_django/additional_files/.gitignore .gitignore")
+    
+    def write_new_package_in_requirements_text(self,package_name,version):
+        self.requirement_text_writer.add_new_package(package_name, version)

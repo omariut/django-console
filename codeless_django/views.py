@@ -5,6 +5,7 @@ from django.core.exceptions import BadRequest
 from django.http import HttpResponse
 from codeless_django.data_manager import DataManager
 from codeless_django.writers.apps import WriteApps
+from codeless_django.writers.files import AdditionalFileWriter
 
 data_manager=DataManager()
 # Create your views here.
@@ -95,5 +96,10 @@ def create_apps(request):
     write_template_views=bool(request.POST.get("template_views"))
     write_api_views=bool(request.POST.get("api_views"))
     data=data_manager._load_data()
-    app_writer = WriteApps(data["apps"],write_template_views,write_api_views).write()
+    app_writer = WriteApps(data["apps"],write_template_views,write_api_views)
+    app_writer.write()
+    file_writer = AdditionalFileWriter()
+    file_writer.write_gitignore_file()
+    if write_api_views:
+        file_writer.write_new_package_in_requirements_text('djangorestframework', "3.14.0")
     return HttpResponse("Success")
