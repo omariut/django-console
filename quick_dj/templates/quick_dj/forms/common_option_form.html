@@ -1,8 +1,0 @@
-{% load quick_dj_tags %}
-
-{% for option in 'Common'|get_options_with_default_values %}
-{%if option.type == 'dropdown' %}
-{% include 'quick_dj/forms/dropdown_option.html' with name=option.name default=option.default %}
-<br>
-{%endif%}
-{%endfor%}

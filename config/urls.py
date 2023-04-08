@@ -18,9 +18,18 @@ from django.urls import path,include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('quickdj/', include('quick_dj.urls')),
+    path('codeless-django/', include('codeless_django.urls')),
 ]
 
+
+
+
+
+
+urlpatterns+=[
+	path('product/', include('product.urls')), 
+	
+ ]
 
 
 

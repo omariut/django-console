@@ -1,4 +1,4 @@
-from quick_dj.writers.base import BaseWriter
+from codeless_django.writers.base import BaseWriter
 
 class ModelWriter(BaseWriter):
 

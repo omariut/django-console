@@ -1,1 +1,1 @@
-{"apps": {"product": {"models": {"Product": {"fields": {"price": {"type": "IntegerField", "options": []}}, "meta_options": []}}}}}
+{"apps": {"product": {"models": {"Product": {"fields": {"price": {"type": "IntegerField", "options": []}, "age": {"type": "IntegerField", "options": []}}, "meta_options": []}}}}}

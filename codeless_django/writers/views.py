@@ -1,4 +1,4 @@
-from quick_dj.writers.base import BaseViewWriter,BaseURLWriter
+from  codeless_django.writers.base import BaseViewWriter,BaseURLWriter
 
 class CreateViewWriter(BaseViewWriter):
 

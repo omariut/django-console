@@ -1,11 +1,11 @@
 import os
 from django.conf import settings
-from quick_dj.writers.views import ViewURLWriter
-from quick_dj.writers.apis import APIViewURLWriter
-from quick_dj.writers.models import ModelWriter
-from quick_dj.writers.files import PrepareFiles
-from quick_dj.writers.base import BaseWriter
-from quick_dj.writers.serializers import ModelSerializerWriter
+from codeless_django.writers.views import ViewURLWriter
+from codeless_django.writers.apis import APIViewURLWriter
+from codeless_django.writers.models import ModelWriter
+from codeless_django.writers.files import PrepareFiles
+from codeless_django.writers.base import BaseWriter
+from codeless_django.writers.serializers import ModelSerializerWriter
 from django.conf import settings
 
 class NewAppsWriter(BaseWriter):

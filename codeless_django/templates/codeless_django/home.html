@@ -1,4 +1,4 @@
-{% extends 'quick_dj/base.html' %}
+{% extends 'codeless_django/base.html' %}
 {% block content %}
 <div class="d-flex justify-content-center">
     <form action="{% url 'add-app' %}" method="post">
@@ -76,10 +76,10 @@
         </tr>
 
           <tr>
-            <td>{% include 'quick_dj/forms/field_form.html' with model_name=model_name app_name=app_name %}</td>
+            <td>{% include 'codeless_django/forms/field_form.html' with model_name=model_name app_name=app_name %}</td>
           </tr>
           <tr>
-            <td>{% include 'quick_dj/forms/model_meta_form.html' with model_name=model_name app_name=app_name %}</td>
+            <td>{% include 'codeless_django/forms/model_meta_form.html' with model_name=model_name app_name=app_name %}</td>
           </tr>
           {%endwith%}
           

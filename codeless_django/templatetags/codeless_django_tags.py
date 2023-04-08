@@ -1,5 +1,5 @@
 from django import template
-from quick_dj.data_manager import DataManager
+from codeless_django.data_manager import DataManager
 
 register = template.Library()
 data_manager=DataManager(file='fields.json')

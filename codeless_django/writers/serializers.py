@@ -1,6 +1,6 @@
 
 import os
-from quick_dj.writers.base import BaseWriter
+from codeless_django.writers.base import BaseWriter
 
 class ModelSerializerWriter(BaseWriter):
     def __init__(self, app_name,model_name):

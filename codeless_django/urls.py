@@ -1,6 +1,6 @@
 
 from django.urls import path
-from quick_dj import views
+from codeless_django import views
 
 urlpatterns = [
     path("",views.home,name='home'),
