@@ -102,4 +102,5 @@ def create_apps(request):
     file_writer.write_gitignore_file()
     if write_api_views:
         file_writer.write_new_package_in_requirements_text('djangorestframework', "3.14.0")
-    return HttpResponse("Success")
+        
+    return redirect('/redoc')

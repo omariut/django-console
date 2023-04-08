@@ -130,3 +130,7 @@ dmypy.json
 
 #database
 *.sqlite3
+
+.gitignore/
+requirements.txt/
+config/
