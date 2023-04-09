@@ -1,12 +1,11 @@
 import os
 from django.conf import settings
-from codeless_django.writers.views import ViewURLWriter
-from codeless_django.writers.apis import APIViewURLWriter
-from codeless_django.writers.models import ModelWriter
-from codeless_django.writers.files import PrepareFiles,AdditionalFileWriter
-from codeless_django.writers.base import BaseWriter
-from codeless_django.writers.serializers import ModelSerializerWriter
-from codeless_django.writers.documentation import DocumentationWriter
+from quick_dj.writers.views import ViewURLWriter
+from quick_dj.writers.apis import APIViewURLWriter
+from quick_dj.writers.models import ModelWriter
+from quick_dj.writers.files import PrepareFiles
+from quick_dj.writers.base import BaseWriter
+from quick_dj.writers.serializers import ModelSerializerWriter
 from django.conf import settings
 
 class NewAppsWriter(BaseWriter):
@@ -83,7 +82,6 @@ class WriteApps:
         app_names=self.local_app_names.copy()    
         if self.write_api_views:
             app_names.append('rest_framework')
-        app_names.append('drf_yasg')
 
         NewAppsWriter(app_names).write_object()
     
@@ -100,18 +98,9 @@ class WriteApps:
             APIViewURLWriter(app_name, model_name).write_api_views_and_urls()
     
     def write(self):
-        file_writer = AdditionalFileWriter()
-        file_writer.write_gitignore_file()
         self.create_app_folders()
         self.write_models()
-        os.system("python3 manage.py makemigrations && python3 manage.py migrate")
-        file_writer.write_new_package_in_requirements_text('drf_yasg', "1.21.5")
-        if self.write_api_views:
-            file_writer.write_new_package_in_requirements_text('djangorestframework', "3.14.0")
-        os.system('pip install -r requirements.txt')
-        
-        doc_writer=DocumentationWriter()
-        doc_writer.write_documentation_url()
+        #os.system("python3 manage.py makemigrations && python3 manage.py migrate")
         self.initiate_app_urls_and_views_files()
         self.include_app_to_settings()
         self.include_app_urls()
@@ -123,7 +112,9 @@ class WriteApps:
                 self.write_app_views(app_name, model_name)
                 self.write_serializers(app_name, model_name)
                 self.write_app_api_views(app_name, model_name)
-      
-        
+
+
+
+
 
 

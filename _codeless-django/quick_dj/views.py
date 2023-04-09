@@ -3,11 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core.exceptions import BadRequest
 from django.http import HttpResponse
-from codeless_django.data_manager import DataManager
-from codeless_django.writers.apps import WriteApps
-from codeless_django.writers.files import AdditionalFileWriter
-from codeless_django.writers.documentation import DocumentationWriter
-import os
+from quick_dj.data_manager import DataManager
+from quick_dj.writers.apps import WriteApps
 
 data_manager=DataManager()
 # Create your views here.
@@ -18,7 +15,7 @@ def home(request):
         if value:
             print(value)
         
-    return render(request, 'codeless_django/home.html',context=data )
+    return render(request, 'quick_dj/home.html',context=data )
 
 @csrf_exempt
 def add_app(request):
@@ -28,7 +25,7 @@ def add_app(request):
             data_manager.create_app(app_name.lower())
         return redirect('home')
     else:
-        return render(request, 'codeless_django/forms/app_form.html')
+        return render(request, 'quick_dj/forms/app_form.html')
 
 
 @csrf_exempt
@@ -55,7 +52,7 @@ def add_field(request,model_name,app_name):
         context["field_class"]=request.GET.get('field_class',"")
         context["model_name"]=model_name
         context["app_name"]=app_name
-        return render(request, 'codeless_django/forms/field_form.html',context=context)
+        return render(request, 'quick_dj/forms/field_form.html',context=context)
 
 @csrf_exempt
 def add_model_meta(request,model_name,app_name):
@@ -68,13 +65,13 @@ def add_model_meta(request,model_name,app_name):
         context={}
         context["model_name"]=model_name
         context["app_name"]=app_name
-        return render(request, 'codeless_django/forms/model_meta_form.html',context=context)
+        return render(request, 'quick_dj/forms/model_meta_form.html',context=context)
 
 
 
 def get_field_options(request):
     field_class=request.GET.get('field_class',"")   
-    return render(request, 'codeless_django/forms/field_option.html',context={"field_class":field_class}) 
+    return render(request, 'quick_dj/forms/field_option.html',context={"field_class":field_class}) 
 
 
 def delete_app(request,app_name):
@@ -98,6 +95,5 @@ def create_apps(request):
     write_template_views=bool(request.POST.get("template_views"))
     write_api_views=bool(request.POST.get("api_views"))
     data=data_manager._load_data()
-    app_writer = WriteApps(data["apps"],write_template_views,write_api_views)
-    app_writer.write()
-    return redirect('/redoc/')
+    app_writer = WriteApps(data["apps"],write_template_views,write_api_views).write()
+    return HttpResponse("Success")
