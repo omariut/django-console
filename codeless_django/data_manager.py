@@ -19,6 +19,10 @@ class DataManager:
     def _save_data(self) -> None:
         with open(self.file, 'w') as f:
             json.dump(self.data, f)
+    
+    def get_fields(self,app_name: str, model_name: str):
+        return self.data["apps"][app_name]["models"][model_name]["fields"]
+
 
     def create_app(self, app_name: str) -> None:
         self.data["apps"][app_name] = {"models": {}}

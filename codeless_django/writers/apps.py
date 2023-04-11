@@ -104,12 +104,12 @@ class WriteApps:
         file_writer.write_gitignore_file()
         self.create_app_folders()
         self.write_models()
-        os.system("python3 manage.py makemigrations && python3 manage.py migrate")
         file_writer.write_new_package_in_requirements_text('drf_yasg', "1.21.5")
         if self.write_api_views:
             file_writer.write_new_package_in_requirements_text('djangorestframework', "3.14.0")
         os.system('pip install -r requirements.txt')
-        
+        os.system("python3 manage.py makemigrations")
+        os.system("python3 manage.py migrate")
         doc_writer=DocumentationWriter()
         doc_writer.write_documentation_url()
         self.initiate_app_urls_and_views_files()

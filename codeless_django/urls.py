@@ -14,5 +14,6 @@ urlpatterns = [
     path('create-app', views.create_apps, name='create-app'),
     path('add-model-meta/<str:model_name>/<str:app_name>',views.add_model_meta,name='add-model-meta'),
     path('delete-model-meta/<str:model_name>/<str:app_name>',views.delete_meta_options,name='delete-model-meta'),
+    path('get-fields/<str:model_name>/<str:app_name>',views.get_fields, name='get-fields' )
 
 ]

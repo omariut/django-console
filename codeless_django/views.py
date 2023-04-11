@@ -18,18 +18,13 @@ def home(request):
         if value:
             print(value)
         
-    return render(request, 'codeless_django/home.html',context=data )
+    return render(request, 'codeless_django/demo.html',context=data )
 
 @csrf_exempt
 def add_app(request):
-    if request.method=="POST":
-        app_name = request.POST.get("app_name")
-        if app_name:
-            data_manager.create_app(app_name.lower())
-        return redirect('home')
-    else:
-        return render(request, 'codeless_django/forms/app_form.html')
-
+    app_name = request.POST.get("app_name")
+    data_manager.create_app(app_name.lower())
+    return redirect('home')
 
 @csrf_exempt
 def add_model(request,app_name):
@@ -49,6 +44,7 @@ def add_field(request,model_name,app_name):
         for option_name,option_value in request.POST.items():
             if option_value:
                 data_manager.create_option(app_name, model_name, field_name, option_name, option_value)
+        
         return redirect('home')
     else:
         context={}
@@ -76,6 +72,11 @@ def get_field_options(request):
     field_class=request.GET.get('field_class',"")   
     return render(request, 'codeless_django/forms/field_option.html',context={"field_class":field_class}) 
 
+def get_fields(request,model_name,app_name):
+    context={}
+    context['fields']=data_manager.get_fields(app_name, model_name)
+    print(context['fields'])
+    return render(request, 'codeless_django/fields.html',context=context)
 
 def delete_app(request,app_name):
     data_manager.delete_app(app_name)

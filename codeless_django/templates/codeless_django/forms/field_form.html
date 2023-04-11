@@ -7,7 +7,7 @@
 
   <div  class="collapse row border-bottom" id="field_form_{{app_name}}_{{model_name}}">
 
-<form action="{%url 'add-field' model_name app_name %}" method="post" class="form-group">
+<form action="{%url 'add-field' model_name app_name %}" method="post" class="form-group" >
     <label for="field_name">field name</label>
     <input type="text" name="field_name" required>
     <label for="field_type">field type</label>
@@ -20,6 +20,6 @@
     <div class="options" id="field_option_{{app_name}}_{{model_name}}">
     {%include 'codeless_django/forms/field_option.html'%}
     </div>
-    <button type="submit">Submit</button>
+    <button  type="submit">Submit</button>
 </form>
 </div>

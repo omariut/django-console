@@ -2,7 +2,7 @@ from django import template
 from codeless_django.data_manager import DataManager
 
 register = template.Library()
-data_manager=DataManager(file='fields.json')
+data_manager=DataManager(file='codeless_django/fields.json')
 
 @register.filter
 def get_options_with_default_values(value):
