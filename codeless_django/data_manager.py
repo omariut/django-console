@@ -5,7 +5,7 @@ import os
 
 class DataManager:
     def __init__(self, file: str = 'data.json') -> None:
-        if not os.path.exists(file):
+        if not os.path.exists('data.json'):
             with open(file, 'w') as f:
                 json.dump({"apps": {}}, f)
 
