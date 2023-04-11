@@ -1,5 +1,6 @@
 include LICENSE
 include README.rst
-recursive-include quick_dj/templates *
-recursive-include quick_dj/templatetags *
-recursive-include quick_dj/writers *
+recursive-include codeless_django/templates *
+recursive-include codeless_django/templatetags *
+recursive-include codeless_django/writers *
+recursive-include codeless_django/additional_files *
