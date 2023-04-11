@@ -1,0 +1,77 @@
+@charset "UTF-8";
+
+* {
+  font-family: 'Roboto', sans-serif;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+button {
+  border: none;
+  outline: none;
+  background: none;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  position: relative;
+}
+
+
+
+ul.tree-list {
+  font-family: "Roboto", sans-serif;
+}
+ul.tree-list li {
+  list-style: none;
+  padding: 0.2em 0;
+}
+ul.tree-list li label {
+  display: inline-block;
+  margin-left: 0.5em;
+  padding: 0.2em 0.3em;
+  border-radius: 0.2em;
+}
+ul.tree-list li > ul {
+  padding-left: 1.2em;
+  position: relative;
+}
+ul.tree-list li > ul > li {
+  display: none;
+}
+ul.tree-list li > ul:before {
+  content: "+";
+  visibility: visible;
+  font-size: 14px;
+  position: absolute;
+  left: -10px;
+  top: -1.8em;
+  transition: transform 0.3s;
+}
+ul.tree-list li input:not(.form-control) {
+  width: 100%;
+  position: absolute;
+  cursor: pointer;
+  margin-top: 0.5em;
+  opacity: 0;
+}
+ul.tree-list li input:hover + label {
+  background-color: #eee;
+}
+ul.tree-list li input:checked ~ ul:before {
+  transform: rotate(90deg);
+}
+ul.tree-list li input:checked ~ ul > li {
+  display: block;
+}
+
+.item-list {
+  margin-left: 10px;
+  padding-left: 20px;
+  border-left: 1px dashed #ddd;
+}

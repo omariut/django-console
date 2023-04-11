@@ -1,0 +1,1 @@
+{"apps": {"new": {"models": {"Product": {"fields": {"name": {"type": "CharField", "options": [{"name": "max_length", "value": "100"}]}}, "meta_options": {}}}}}}
