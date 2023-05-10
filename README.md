@@ -3,8 +3,13 @@
 CodeLess-Django is a Django app to develop django apps without writing code. Developers can create apps and models from a web page where all the models field types and options are placed in front of developers eyes . CodeLess-Django will take care of adding apps to settings file, creating generic views and api views etc.
 Detailed documentation is in the "docs" directory.
 
+## installation
+```
+pip install codeless-django
+```
+
 ## Quick start
------------
+
 
 1. Add "codeless-django" to your INSTALLED_APPS setting like this::
 ``` python
