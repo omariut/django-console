@@ -1,6 +1,12 @@
 from codeless_django.writers.base import BaseWriter
 import os
 
+import codeless_django
+root_path =  os.path.abspath(codeless_django.__file__).strip('__init__.py')
+gitignore_file_path=os.path.join(root_path, 'additional_files','.gitignore')
+
+
+
 class PrepareFiles:
 
     def __init__(self,app_name,write_api_views=False):
@@ -60,7 +66,7 @@ class AdditionalFileWriter:
 
 
     def write_gitignore_file(self):
-        os.system("cp codeless_django/additional_files/.gitignore .gitignore")
+        os.system(f"cp  {gitignore_file_path} .gitignore")
     
     def write_new_package_in_requirements_text(self,package_name,version):
         self.requirement_text_writer.add_new_package(package_name, version)

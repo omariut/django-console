@@ -1,7 +1,8 @@
 import os
 from django.conf import settings
-from codeless_django.writers.views import ViewURLWriter
-from codeless_django.writers.apis import APIViewURLWriter
+from codeless_django.writers.urls import URLWriter,APIUrlWriter
+from codeless_django.writers.views import ViewWriter
+from codeless_django.writers.apis import APIViewWriter
 from codeless_django.writers.models import ModelWriter
 from codeless_django.writers.files import PrepareFiles,AdditionalFileWriter
 from codeless_django.writers.base import BaseWriter
@@ -23,6 +24,9 @@ class NewAppsWriter(BaseWriter):
         for name in self.app_names:
             new_apps+=f"\t \"{name}\", \n"
         return new_apps + "\n]\n"
+    
+    def get_full_string(self):
+        return self.get_object_header()+self.get_object_body()
 
 class IncludeAppUrlToRootUrlWriter(BaseWriter):
 
@@ -44,6 +48,8 @@ class IncludeAppUrlToRootUrlWriter(BaseWriter):
         
         return app_urls + "\n ]\n"
 
+    def get_full_string(self):
+        return self.get_object_header()+self.get_object_body()
 
 
 
@@ -69,10 +75,7 @@ class WriteApps:
     def write_models(self):
         for app_name, value in self.apps.items():
             models = value["models"]
-            for model_name,value in models.items():
-                fields=value["fields"]
-                meta_options=value["meta_options"]
-                ModelWriter(app_name, model_name, fields,meta_options).write_object()
+            ModelWriter(app_name, models).write_object()
     
     def include_app_urls(self):
         app_names=self.local_app_names
@@ -87,42 +90,72 @@ class WriteApps:
 
         NewAppsWriter(app_names).write_object()
     
-    def write_app_views(self,app_name,model_name):
+    def write_app_views(self):
         if self.write_template_views:
-            ViewURLWriter(app_name, model_name).write_views_and_urls()
+            for app_name, value in self.apps.items():
+                models = value["models"]
+                ViewWriter(app_name, models).write_object()
     
-    def write_serializers(self,app_name,model_name):
-        if self.write_api_views:
-            ModelSerializerWriter(app_name, model_name).write_object()
+    def write_urls(self):
+        if self.write_template_views:
+            for app_name, value in self.apps.items():
+                models = value["models"]
+                URLWriter(app_name, models).write_object()
 
-    def write_app_api_views(self,app_name,model_name):
+    def write_api_urls(self):
         if self.write_api_views:
-            APIViewURLWriter(app_name, model_name).write_api_views_and_urls()
+            
+            for app_name, value in self.apps.items():
+                models = value["models"]
+                APIUrlWriter(app_name, models).write_object()
+            
+    
+    
+    def write_serializers(self):
+        if self.write_api_views:
+            for app_name, value in self.apps.items():
+                models = value["models"]
+                ModelSerializerWriter(app_name, models).write_object()
+
+    def write_app_api_views(self):
+        if self.write_api_views:
+            for app_name, value in self.apps.items():
+                models = value["models"]
+                APIViewWriter(app_name, models).write_object()
+            
     
     def write(self):
         file_writer = AdditionalFileWriter()
         file_writer.write_gitignore_file()
         self.create_app_folders()
-        self.write_models()
         file_writer.write_new_package_in_requirements_text('drf_yasg', "1.21.5")
         if self.write_api_views:
             file_writer.write_new_package_in_requirements_text('djangorestframework', "3.14.0")
         os.system('pip install -r requirements.txt')
-        os.system("python3 manage.py makemigrations")
-        os.system("python3 manage.py migrate")
+        
+        
         doc_writer=DocumentationWriter()
         doc_writer.write_documentation_url()
         self.initiate_app_urls_and_views_files()
         self.include_app_to_settings()
         self.include_app_urls()
-
         
         for app_name, value in self.apps.items():
-            models = value["models"]
-            for model_name,value in models.items():
-                self.write_app_views(app_name, model_name)
-                self.write_serializers(app_name, model_name)
-                self.write_app_api_views(app_name, model_name)
+            self.write_models()
+            self.write_app_views()
+            self.write_urls()
+            self.write_serializers()
+            self.write_app_api_views()
+            self.write_api_urls()
+
+        os.system("python3 manage.py makemigrations")
+        os.system("python3 manage.py migrate")
+
+
+
+
+
+
       
         
 

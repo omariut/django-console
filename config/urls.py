@@ -46,5 +46,7 @@ urlpatterns += [
 
 
 
-
-
+urlpatterns+=[
+	path('user/', include('user.urls')), 
+	
+ ]

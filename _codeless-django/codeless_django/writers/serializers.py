@@ -7,7 +7,7 @@ class ModelSerializerWriter(BaseWriter):
         file_name=f"{app_name}/serializers.py"
 
         if not os.path.exists(file_name):
-            with open(file_name,'a') as f:
+            with open(file_name,'w') as f:
                 f.write("from rest_framework import serializers \n \n")
         super().__init__(app_name, model_name, file_name)
     

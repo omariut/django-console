@@ -1,6 +1,8 @@
 include LICENSE
-include README.rst
+include README.md
 recursive-include codeless_django/templates *
 recursive-include codeless_django/templatetags *
 recursive-include codeless_django/writers *
 recursive-include codeless_django/additional_files *
+
+

@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core.exceptions import BadRequest
@@ -101,4 +101,5 @@ def create_apps(request):
     data=data_manager._load_data()
     app_writer = WriteApps(data["apps"],write_template_views,write_api_views)
     app_writer.write()
+    documentation_link = reverse('schema-swagger-ui')
     return redirect('/swagger/')

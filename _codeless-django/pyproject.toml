@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "codeless-django"
-version = "0.0.2"
+version = "0.0.11"
 authors = [
   { name="Omar Faruk", email="omar.iut.09@gmail.com" },
 ]

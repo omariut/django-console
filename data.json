@@ -1,1 +1,1 @@
-{"apps": {}}
+{"apps": {"user": {"models": {"User": {"fields": {"name": {"type": "CharField", "options": [{"name": "max_length", "value": "100"}]}, "age": {"type": "IntegerField", "options": []}}, "meta_options": {}}}}}}

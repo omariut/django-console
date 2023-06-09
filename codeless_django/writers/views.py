@@ -1,6 +1,13 @@
-from  codeless_django.writers.base import BaseViewWriter,BaseURLWriter
+from  codeless_django.writers.base import BaseWriter, BaseViewWriter,BaseURLWriter,BaseBuilder
 
-class CreateViewWriter(BaseViewWriter):
+
+class BaseViewBuilder(BaseBuilder):
+    def __init__(self,app_name,model_name):
+        self.model_name=model_name
+        self.app_name=app_name
+
+
+class CreateViewBuilder(BaseViewBuilder):
 
     def get_object_header(self):
         return f"class {self.model_name}CreateView(generic.CreateView):\n"
@@ -9,7 +16,7 @@ class CreateViewWriter(BaseViewWriter):
         return f"\tmodel = {self.app_name}_models.{self.model_name}\n\tfields = '__all__'\n\tsuccess_url= ' \ \' "
 
 
-class ListViewWriter(BaseViewWriter):
+class ListViewBuilder(BaseViewBuilder):
 
     def get_object_header(self):
         return f"class {self.model_name}ListView(generic.ListView):\n"
@@ -18,7 +25,7 @@ class ListViewWriter(BaseViewWriter):
         return f"\tmodel =  {self.app_name}_models.{self.model_name}\n\tpaginate_by = 10 \n"
 
 
-class DetailViewWriter(BaseViewWriter):
+class DetailViewBuilder(BaseViewBuilder):
 
     def get_object_header(self):
         return f"class {self.model_name}DetailView(generic.DetailView):\n"
@@ -26,25 +33,34 @@ class DetailViewWriter(BaseViewWriter):
     def get_object_body(self):
         return f"\tmodel =  {self.app_name}_models.{self.model_name} \n"
 
-class URLWriter(BaseURLWriter):
 
-    def get_url_string(self):
-        url_string = ''
-        url_string += f"    path('{self.model_name.lower()}/list/', views.{self.model_name}ListView.as_view(), name='{self.model_name.lower()}_list'),\n"
-        url_string += f"    path('{self.model_name.lower()}/create/', views.{self.model_name}CreateView.as_view(), name='{self.model_name.lower()}_create'),\n"
-        url_string += f"    path('{self.model_name.lower()}/<int:pk>/', views.{self.model_name}DetailView.as_view(), name='{self.model_name.lower()}_detail'),\n"
-        return url_string
+class UpdateViewBuilder(BaseViewBuilder):
 
-class ViewURLWriter:
+    def get_object_header(self):
+        return f"class {self.model_name}UpdateView(generic.UpdateView):\n"
 
-    def __init__(self,app_name, model_name):
-        self.model_name = model_name
-        self.app_name=app_name
+    def get_object_body(self):
+        return f"\tmodel =  {self.app_name}_models.{self.model_name} \n"
     
-    def write_views_and_urls(self):
+
+class ViewWriter(BaseWriter):
+    def __init__(self, app_name,models):
+        self.models = models
+        self.app_name=app_name
+        file_name = f"{app_name}/views.py"
+        super().__init__(file_name)
+    
+    def get_full_string(self):
         app_name=self.app_name
-        model_name=self.model_name
-        ListViewWriter(app_name, model_name).write_object()
-        CreateViewWriter(app_name, model_name).write_object()
-        DetailViewWriter(app_name, model_name).write_object()
-        URLWriter(app_name, model_name).write_object()
+        full_string = ""
+        for model_name in self.models.keys():
+            full_string+=ListViewBuilder(app_name, model_name).get_object_string()
+            full_string+=DetailViewBuilder(app_name, model_name).get_object_string()
+            full_string+=UpdateViewBuilder(app_name, model_name).get_object_string()
+            full_string+=CreateViewBuilder(app_name, model_name).get_object_string()
+
+        return full_string
+
+
+
+

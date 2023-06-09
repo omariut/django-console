@@ -32,8 +32,10 @@ class PrepareFiles:
 
     def write_import_line_to_url_file(self):
         file_name=f"{self.app_name}/urls.py"
-        import_line="from django.urls import path" + "\n" + f"from {self.app_name} import views"
-        self.write_import_line(file_name,import_line)
+        import_line="from django.urls import path" + "\n" + f"from {self.app_name} import views \n"
+        initial_url_pattern = "urlpatterns = [] \n"
+        text = import_line + initial_url_pattern
+        self.write_import_line(file_name,text)
 
 class RequirementTextWriter:
     def __init__(self):

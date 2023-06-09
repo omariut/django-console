@@ -101,4 +101,6 @@ def create_apps(request):
     data=data_manager._load_data()
     app_writer = WriteApps(data["apps"],write_template_views,write_api_views)
     app_writer.write()
+    os.system("rm data.json")
     return redirect('/swagger/')
+

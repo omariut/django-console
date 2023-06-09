@@ -130,3 +130,5 @@ dmypy.json
 
 #database
 *.sqlite3
+data.json/
+config/

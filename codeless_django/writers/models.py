@@ -1,13 +1,12 @@
-from codeless_django.writers.base import BaseWriter
+from codeless_django.writers.base import BaseWriter,BaseBuilder
 
-class ModelWriter(BaseWriter):
+class ModelBuilder(BaseBuilder):
 
-    def __init__(self, app_name, model_name, fields,meta_options):
+    def __init__(self,model_name, fields,meta_options):
+        self.model_name=model_name
         self.fields=fields
         self.meta_options=meta_options
-        file_name = f"{app_name}/models.py"
-        super().__init__(app_name, model_name, file_name)
-    
+
     def get_field_options(self,options):
         return ", ".join([f"{opt['name']}={opt['value']}" for opt in options])
     
@@ -36,3 +35,21 @@ class ModelWriter(BaseWriter):
             return model_body + meta_body
         else:
             return model_body
+
+    def get_object_string(self):
+        return self.get_object_header() + self.get_object_body() + '\n'
+class ModelWriter(BaseWriter):
+
+    def __init__(self, app_name,models):
+        self.models = models
+        file_name = f"{app_name}/models.py"
+        super().__init__(file_name)
+    
+    def get_full_string(self):
+        full_string = ""
+        for model_name,value in self.models.items():
+            fields=value["fields"]
+            meta_options=value["meta_options"]
+            builder = ModelBuilder(model_name,fields, meta_options)
+            full_string+= builder.get_object_string()
+        return full_string
