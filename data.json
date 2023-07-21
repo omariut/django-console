@@ -1,1 +1,1 @@
-{"apps": {"user": {"models": {"User": {"fields": {"name": {"type": "CharField", "options": [{"name": "max_length", "value": "100"}]}, "age": {"type": "IntegerField", "options": []}}, "meta_options": {}}}}}}
+{"apps": {"product": {"models": {"Product": {"fields": {"name": {"type": "CharField", "options": [{"name": "max_length", "value": "100"}]}, "price": {"type": "FloatField", "options": []}}, "meta_options": {}}}}}}

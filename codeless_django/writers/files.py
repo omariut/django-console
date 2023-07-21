@@ -40,7 +40,9 @@ class PrepareFiles:
 class RequirementTextWriter:
     def __init__(self):
         self.file_name="requirements.txt"
-        os.system("pip freeze > requirements.txt")
+        with open(self.file_name,'a') as f:
+            f.write(f"django>=2.2.16 \nPillow==9.5.0 \n")
+
     
     def add_new_package(self,package_name,version):
         with open(self.file_name,'a') as f:
