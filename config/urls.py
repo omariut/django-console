@@ -46,7 +46,3 @@ urlpatterns += [
 
 
 
-urlpatterns+=[
-	path('product/', include('product.urls')), 
-	
- ]
